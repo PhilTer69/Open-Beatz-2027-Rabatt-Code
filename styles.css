@@ -73,11 +73,12 @@ a { color: inherit; }
 
 .nav-ticket {
   text-decoration: none;
-  font-weight: 800;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
+  font-weight: 900;
+  padding: 11px 16px;
   border-radius: 12px;
-  background: rgba(255,255,255,.05);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #09090d;
+  box-shadow: 0 10px 30px rgba(67,231,255,.15);
 }
 
 .hero-content {
@@ -148,7 +149,7 @@ h1 span {
 
 button,
 .cta,
-.ticket-cta {
+.ticket-banner {
   border: 0;
   cursor: pointer;
   font: inherit;
@@ -171,25 +172,64 @@ button:hover { transform: translateY(-1px); }
   margin: 10px 0 0;
 }
 
-.hero-actions {
+.ticket-banner {
+  max-width: 760px;
+  margin-top: 10px;
+  padding: 22px 24px;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 18px;
-}
-
-.ticket-cta {
-  display: inline-block;
-  padding: 14px 18px;
-  border-radius: 14px;
+  justify-content: space-between;
+  gap: 20px;
+  border-radius: 20px;
   text-decoration: none;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
   color: #09090d;
+  box-shadow:
+    0 18px 55px rgba(183,108,255,.22),
+    0 12px 35px rgba(67,231,255,.14);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.ticket-banner:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow:
+    0 24px 70px rgba(183,108,255,.28),
+    0 16px 45px rgba(67,231,255,.2);
+}
+
+.ticket-banner-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ticket-banner-copy small {
+  font-size: .72rem;
+  letter-spacing: .14em;
+  font-weight: 900;
+  opacity: .72;
+}
+
+.ticket-banner-copy strong {
+  font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+  line-height: 1.2;
+}
+
+.ticket-banner-arrow {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(9,9,13,.12);
+  font-size: 1.7rem;
+  font-weight: 900;
 }
 
 .cta {
   display: inline-block;
+  margin-top: 18px;
   text-decoration: none;
   color: var(--text);
 }
@@ -338,19 +378,21 @@ footer {
   .hero-content { padding: 70px 0 90px; }
   .nav-actions { gap: 10px; }
   .nav-link { display: none; }
+  .nav-ticket { padding: 9px 11px; font-size: .82rem; }
   .code-card {
     align-items: stretch;
     flex-direction: column;
   }
   button { width: 100%; }
-  .hero-actions {
-    align-items: stretch;
-    flex-direction: column;
+  .ticket-banner {
+    align-items: center;
+    padding: 18px;
   }
-  .ticket-cta,
-  .cta {
-    text-align: center;
+  .ticket-banner-arrow {
+    width: 40px;
+    height: 40px;
   }
+  .cta { text-align: center; }
   .steps,
   .info-grid { grid-template-columns: 1fr; }
   .footer-inner { flex-direction: column; gap: 4px; }
