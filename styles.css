@@ -441,3 +441,49 @@ footer {
   font-weight: 800;
   border-bottom: 0;
 }
+
+.checkout-proof {
+  margin: 32px 0;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--card);
+  scroll-margin-top: 24px;
+}
+
+.checkout-proof h3 {
+  margin-top: 0;
+}
+
+.checkout-proof p,
+.checkout-proof figcaption {
+  color: var(--muted);
+}
+
+.checkout-proof-image {
+  display: block;
+  margin: 20px 0 16px;
+}
+
+.checkout-proof img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.checkout-proof figcaption {
+  font-size: .85rem;
+}
+
+.checkout-proof figcaption .text-link {
+  display: inline-block;
+  margin-top: 8px;
+}
+
+@media (max-width: 760px) {
+  .checkout-proof {
+    padding: 18px;
+  }
+}
