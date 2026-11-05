@@ -10,17 +10,24 @@ function copyCode() {
     }, 2200);
   };
 
+  // Capture consent at the time of the click; do not track earlier actions later.
+  const analyticsAllowed = window['ga-disable-G-1GSW1FLHVX'] === false;
+  const onCopied = () => {
+    showStatus('Code kopiert ✓');
+    if (analyticsAllowed) trackCodeCopy();
+  };
+
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(code)
-      .then(() => showStatus('Code kopiert ✓'))
-      .catch(() => fallbackCopy(code, codeElement, showStatus));
+      .then(onCopied)
+      .catch(() => fallbackCopy(code, codeElement, showStatus, onCopied));
     return;
   }
 
-  fallbackCopy(code, codeElement, showStatus);
+  fallbackCopy(code, codeElement, showStatus, onCopied);
 }
 
-function fallbackCopy(code, codeElement, showStatus) {
+function fallbackCopy(code, codeElement, showStatus, onCopied) {
   const textarea = document.createElement('textarea');
   textarea.value = code;
   textarea.setAttribute('readonly', '');
@@ -31,7 +38,8 @@ function fallbackCopy(code, codeElement, showStatus) {
 
   try {
     const successful = document.execCommand('copy');
-    showStatus(successful ? 'Code kopiert ✓' : 'Code bitte markieren und kopieren.');
+    if (successful) onCopied();
+    else showStatus('Code bitte markieren und kopieren.');
   } catch {
     const range = document.createRange();
     range.selectNodeContents(codeElement);
@@ -41,5 +49,14 @@ function fallbackCopy(code, codeElement, showStatus) {
     showStatus('Code markiert – bitte kopieren.');
   } finally {
     textarea.remove();
+  }
+}
+
+function trackCodeCopy() {
+  if (window['ga-disable-G-1GSW1FLHVX'] !== false || typeof window.gtag !== 'function') return;
+  try {
+    window.gtag('event', 'copy_code', { send_to: 'G-1GSW1FLHVX' });
+  } catch {
+    // Analytics must never interrupt copying.
   }
 }
