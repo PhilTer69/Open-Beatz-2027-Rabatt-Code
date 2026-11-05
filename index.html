@@ -2,6 +2,20 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
+
+  <!-- Google tag (gtag.js): loaded only after statistics consent. -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window['ga-disable-G-1GSW1FLHVX'] = true;
+    gtag('consent', 'default', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
+  </script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>10 % Rabatt | Open Beatz Rabattcode 2027</title>
@@ -148,6 +162,23 @@
     ]
   }
   </script>
+
+  <style>
+    #analytics-consent[hidden] { display: none; }
+    #analytics-consent {
+      position: fixed; z-index: 100; inset: auto 16px 16px;
+      max-width: 740px; max-height: calc(100dvh - 32px); overflow: auto;
+      margin: 0 auto; padding: 22px; border: 1px solid var(--line);
+      border-radius: 20px; background: var(--bg-soft); color: var(--text);
+      box-shadow: 0 12px 60px rgba(0,0,0,.5);
+    }
+    #analytics-consent h2 { margin: 0 0 10px; font-size: 1.25rem; letter-spacing: -.02em; line-height: 1.3; }
+    #analytics-consent p { margin: 0 0 16px; font-size: .9rem; color: var(--muted); }
+    .analytics-consent-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .analytics-consent-actions button { flex: 1 1 180px; white-space: normal; }
+    #analytics-settings { padding: 0; background: none; border-radius: 0; font-size: inherit; white-space: normal; text-decoration: underline; }
+    #analytics-consent button:focus-visible, #analytics-settings:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 4px; }
+  </style>
 </head>
 
 <body>
@@ -522,10 +553,114 @@
       <p>Private, nicht offizielle Open-Beatz-Rabattcode-Seite.</p>
       <p><a class="text-link" href="https://openbeatz.de/tickets" target="_blank" rel="noopener noreferrer">Offizieller Open-Beatz-Ticketshop ↗</a></p>
       <p>Open Beatz und zugehörige Marken gehören den jeweiligen Rechteinhabern.</p>
+      <p><button id="analytics-settings" class="text-link" type="button">Statistik-Einstellungen</button></p>
     </div>
   </footer>
 
+
+  <section id="analytics-consent" role="region" aria-labelledby="analytics-consent-title" hidden>
+    <h2 id="analytics-consent-title">Statistik erlauben?</h2>
+    <p>Mit deiner Zustimmung nutze ich Google Analytics, um zu sehen, wie diese Website genutzt wird und woher Besucher kommen. Dabei werden Cookies gesetzt und Nutzungs- und Gerätedaten an Google übermittelt; eine Verarbeitung in den USA ist möglich. Ohne Zustimmung bleibt Analytics ausgeschaltet. Deine Auswahl wird für 180 Tage auf diesem Gerät gespeichert. Du kannst sie jederzeit über „Statistik-Einstellungen“ im Footer ändern.
+      <a class="text-link" href="https://policies.google.com/technologies/partner-sites?hl=de" target="_blank" rel="noopener noreferrer">Infos zur Datenverarbeitung bei Google ↗</a>
+    </p>
+    <div class="analytics-consent-actions">
+      <button id="analytics-reject" type="button">Ablehnen</button>
+      <button id="analytics-accept" type="button">Statistik erlauben</button>
+    </div>
+  </section>
+
   <script src="script.js?v=4"></script>
+
+  <script>
+    (() => {
+      const measurementId = 'G-1GSW1FLHVX';
+      const storageKey = 'dosenbiergesicht-analytics-consent-v1';
+      const consentLifetime = 180 * 24 * 60 * 60 * 1000;
+      const banner = document.getElementById('analytics-consent');
+      const settingsButton = document.getElementById('analytics-settings');
+      let loaded = false;
+      let returnFocus = false;
+
+      function readConsent() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey));
+          if (saved && (saved.choice === 'granted' || saved.choice === 'denied')
+              && saved.expires > Date.now() && saved.expires <= Date.now() + consentLifetime) {
+            return saved.choice;
+          }
+        } catch {}
+        return null;
+      }
+
+      function enableAnalytics() {
+        if (loaded) return;
+        loaded = true;
+        window['ga-disable-' + measurementId] = false;
+        gtag('consent', 'update', { analytics_storage: 'granted' });
+        gtag('js', new Date());
+        gtag('config', measurementId, {
+          allow_google_signals: false,
+          allow_ad_personalization_signals: false,
+          cookie_expires: 60 * 60 * 24 * 180,
+          cookie_update: false
+        });
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + measurementId;
+        document.head.appendChild(script);
+      }
+
+      function removeAnalyticsCookies() {
+        const domains = location.hostname.split('.');
+        document.cookie.split(';').forEach(cookie => {
+          const name = cookie.split('=')[0].trim();
+          if (name !== '_ga' && !name.startsWith('_ga_')) return;
+          const expired = name + '=; Max-Age=0; path=/; SameSite=Lax';
+          document.cookie = expired;
+          for (let i = 0; i < domains.length - 1; i++) {
+            const domain = domains.slice(i).join('.');
+            document.cookie = expired + '; domain=' + domain;
+            document.cookie = expired + '; domain=.' + domain;
+          }
+        });
+      }
+
+      function chooseConsent(choice) {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify({
+            choice, expires: Date.now() + consentLifetime
+          }));
+        } catch {}
+        banner.hidden = true;
+        if (returnFocus) settingsButton.focus();
+        if (choice === 'granted') {
+          enableAnalytics();
+        } else {
+          window['ga-disable-' + measurementId] = true;
+          gtag('consent', 'update', { analytics_storage: 'denied' });
+          removeAnalyticsCookies();
+          // Unload an already running tag after withdrawal.
+          if (loaded) location.reload();
+        }
+      }
+
+      document.getElementById('analytics-accept').addEventListener('click', () => chooseConsent('granted'));
+      document.getElementById('analytics-reject').addEventListener('click', () => chooseConsent('denied'));
+      settingsButton.addEventListener('click', () => {
+        returnFocus = true;
+        banner.hidden = false;
+        document.getElementById('analytics-reject').focus();
+      });
+
+      const consent = readConsent();
+      if (consent === 'granted') enableAnalytics();
+      else {
+        removeAnalyticsCookies();
+        banner.hidden = consent === 'denied';
+      }
+    })();
+  </script>
+
 </body>
 </html>
 
